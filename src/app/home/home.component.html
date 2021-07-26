@@ -1,0 +1,283 @@
+<!-- <h1>Guidlines</h1> -->
+<div id="msg">
+  <h4>Check your nearest vaccination center and slots availability</h4>
+      <h5  class="guideline">
+        Please Do Maintain Social Distances Wear Mask<br> And Do Not Attend A Large Gatherings Act Safe And Save Life
+      </h5> 
+  </div>
+
+
+
+<!-- Form input for search by State -->
+<div class="top-margin">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-3"></div>
+      <div class="col-lg-6 col-md-6">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button
+            type="button"
+            (click)="showFindByDistrictForm()"
+            class="btn btn-outline-dark btn-lg"
+          >
+            Search By State
+          </button>
+
+          <button
+            type="button"
+            (click)="showFindByPinForm()"
+            class="btn btn-outline-dark btn-lg"
+          >
+            Search By Pincode
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-3"></div>
+    </div>
+  </div>
+</div>
+<br />
+
+<!-- Form input for search by District -->
+<div *ngIf="searchByDistrict">
+  <div class="form-position">
+  <div class="container">
+    <form>
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="alllabel"  for="state">State</label>
+            <select (change)="onSelectState($event)"  class="dropdown-primary form-control" name="state" id="state">
+              <option value="" selected disabled>Select State</option>
+              <option *ngFor="let i of myStateArray" [value]="i.state_id">
+                {{i.state_name}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="alllabel"  for="district">District</label>
+            <select (change)="onSelectDistrictFindSlot($event)" class="dropdown-primary form-control" id="district" name="district">
+              <option value="" selected disabled>Select District</option>
+              <option *ngFor="let j of myDistrictsArray" [value]="j.district_id">
+                {{j.district_name}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <!-- AGE GROUP DROPDOWN SELECT AGE GROUP  18-45-->
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label  class="alllabel"  for="ageGroup">Age Group</label>
+            <select (change)="onAgeGroupSelected($event)" class="dropdown-primary form-control" id="ageGroup" name="ageGroup">
+              <option value="" selected disabled>Select Age</option>
+              <option *ngFor="let j of ageGroup" [value]="j">
+                {{j}}
+              </option>
+            </select>
+            
+          </div>
+        </div>
+        <!-- SELECT VACCINE OUT OF THREE  -->
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="alllabel"  for="vaccine">Vaccine</label>
+            <select (change)="onVaccineSelected($event)" class="dropdown-primary form-control" id="vaccine" name="vaccine">
+              <option value="" selected disabled>Select Vaccine</option>
+              <option *ngFor="let j of vaccine" [value]="j">
+                {{j}}
+              </option>
+            </select>
+          </div>
+          
+        </div>
+
+      </div>
+
+  </form>
+  </div>
+</div>
+</div>
+
+
+<!-- Form input for search by Pincode -->
+<div *ngIf="searchByPin">
+  <div class="form-position">
+  <div class="container">
+      <form >
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label  class="alllabel" for="pin">Pincode</label>
+              <input type="number" class="form-control" required name="pin" id="pin" (keyup)="findByPincode($event)">
+             
+            </div>
+          </div>
+          <!-- AGE GROUP DROPDOWN SELECT AGE GROUP  18-45-->
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="alllabel"  for="ageGroup">Age Group</label>
+              <select (change)="onAgeGroupSelected($event)" class="dropdown-primary form-control" id="ageGroup" name="ageGroup">
+                <option value="" selected disabled>Select Age</option>
+                <option *ngFor="let j of ageGroup" [value]="j">
+                  {{j}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <!-- SELECT VACCINE OUT OF THREE  -->
+          <div class="col-lg-4">
+            <div class="form-group">
+              <div class="form-group">
+                <label   class="alllabel" for="vaccine">Vaccine</label>
+                <select (change)="onVaccineSelected($event)" class="dropdown-primary form-control" id="vaccine" name="vaccine">
+                  <option value="" selected disabled>Select Vaccine</option>
+                  <option *ngFor="let j of vaccine" [value]="j">
+                    {{j}}
+                  </option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+    </form>
+  </div>
+</div>
+</div>
+
+
+
+
+
+<!-- Result of Search by state  -->
+<div *ngIf="showSearchedRecordsByDistrict">
+  <div class="container">
+    <div class="ScrollStyle">
+      <table class="table table-striped table-hover table-bordered table-style" cellspacing="0">
+        <!-- STATE TABLE HEADING  -->
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">
+              <tr>Center Name</tr>
+              <tr class="sagar">Center Address</tr>
+            </th>
+            
+            <th scope="col">Pincode</th>
+            <th scope="col">Earliest Date</th>
+            <th scope="col">Available Dose</th>
+            <!-- <th scope="col">Time Slots</th> -->
+            <th scope="col">Age</th>
+            <th scope="col">Vaccine</th>
+            
+            <th scope="col">
+            <tr> Fee</tr>
+            <tr class="sagar">Fee Type</tr>
+            </th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container
+          *ngFor="let session of mySessionArray ;"
+          >
+          <tr *ngIf="(session.vaccine == vaccineType && session.min_age_limit == ageLimit && session.available_capacity>0)">
+<!--STATE TABLE API DATA -->
+            <td>
+              <tr>{{session.name}}</tr>
+              <tr class="sagar">{{session.address}}</tr>
+            </td>
+
+            <td>{{session.pincode}}</td>
+            <td>{{session.date}}</td>
+            <td>{{session.available_capacity}}</td>
+            <!-- <td>{{session.slots}}</td> -->
+            <td>{{session.min_age_limit}}</td>
+            <td>{{session.vaccine}}</td>
+
+            <td>
+              <tr>Rs.{{session.fee}}</tr> 
+              <tr class="sagar">{{session.fee_type}}</tr>  
+            </td>
+
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+  </div>
+
+
+  <!-- Result of Search by PincoDE-->
+  <div *ngIf="showSearchedRecordsByPincode">
+    <div class="container">
+      <div class="ScrollStyle">
+        <table class="table table-striped table-hover table-bordered table-style" cellspacing="0">
+          <thead class="thead-light">
+            <tr>
+<!-- PINCODE TABLE HEADING -->
+              
+              <th scope="col">
+                <tr>Center Name </tr>
+                <tr class="sagar"> Center Address</tr>
+              </th>
+              <th scope="col">Pincode</th>
+              <th scope="col">Earliest Date</th>
+              <th scope="col">Available Dose</th>
+              <!-- <th scope="col">Time Slots</th> -->
+              <th scope="col">Age</th>
+              <th scope="col">Vaccine</th>
+
+              <th scope="col">
+                <tr> Fee</tr>
+                <tr class="sagar">Fee Type</tr>
+              </th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container
+            *ngFor="let session of mySessionArray2 ;"
+            >
+            <tr *ngIf="(session.vaccine == vaccineType && session.min_age_limit == ageLimit && session.available_capacity>0)">
+<!-- PINCODE TABLE API DATA -->
+              <td>
+                <tr>{{session.name}}</tr>
+                <tr class="sagar">{{session.address}}</tr>
+              </td>
+            
+              <td> {{session.pincode}}</td>
+              <td>{{session.date}}</td>
+              <td>{{session.available_capacity}}</td>
+              <!-- <td>{{session.slots}}</td> -->
+              <td>{{session.min_age_limit}}</td>
+              <td>{{session.vaccine}}</td>
+
+              <td>
+                <tr>Rs.{{session.fee}}</tr> 
+                <tr class="sagar">{{session.fee_type}}</tr>  
+              </td>
+            
+            </tr>
+
+
+          </ng-container>
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+    </div>
+    <footer>
+      <tr>@Copyright</tr>
+      <tr class="footer1">Sagar Yadav</tr>
+    </footer>
+    
+
